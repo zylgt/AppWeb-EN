@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+         .custom{
+            background: #fff;
+            padding:20px;
+            font-size:16px;
+            color:#333;
+        }
+        .agreement-box{
+            font-size:14px;
+            color:#333;
+            display: none;
+        }
+        .agreement-title{
+            font-size:18px;
+            margin-bottom:20px;
+            font-family:MiLan-Medium;
+        }
+        .agreement-sub-title{
+            font-size:16px;
+            margin-bottom:10px;
+            font-family:MiLan-Medium;
+        }
+        .agreement-cont{
+            color:#666;
+            line-height: 1.5;
+        }
+        .agreement-bold{
+            color:#333;
+            font-family:MiLan-Medium;
+        }
+    </style>
+</head>
+<body>
+    <div class="agreement-box" >
+        <div class="agreement-title" >九安账号注销须知</div>
+        <div class="agreement-sub-title" >尊敬的用户</div>
+        <div class="agreement-cont" >
+            注销账号为不可恢复的操作，您的身份信息、账户信息等将被清空且无法恢复。在您确认注销您的账户之前，应当认真阅读《账户注销须知》（以下简称《注销须知》）。
+        </div>
+        <br/>
+        <div class="agreement-bold" >
+            请您务必认真阅读、充分理解《注销须知》中相关条款内容，其中包括：
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            1.  与您约定免除或限制责任的条款。
+        </div>
+        <div class="agreement-cont" >
+            2.其他以粗体标识的重要条款。如您对本《注销须知》有任何疑问，或您在注销账号过程中遇到任何困难，您可以拨打我们的联系电话400-611-0208。
+        </div>
+        <br/>
+        <div class="agreement-bold" >
+            【特别提示】
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            当您按照注销页面提示填写信息、阅读并同意本《注销须知》及相关条款与条件且完成全部注销程序后，即表示您已充分阅读、理解并接受本《注销须知》的全部内容。阅读本《注销须知》的过程中，如果您不同意相关任何条款和条件约定，请您立即停止账户注销程序。
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            1、您所申请注销的九安CGM的应用软件账号应当是您依照与本平台的约定注册并由天津九安医疗电子股份有限公司（以下简称“九安医疗”）提供给您本人的账户。
+        </div>
+        <br/>
+        <div class="agreement-bold" >
+            您自注册该账号起，使用该账号进行的行为符合国家法律法规、用户注册协议以及平台其他相关规则；您应确保您有权决定该账户的注销事宜，不侵犯任何第三方的合法权益，如因此引发任何投诉争议，由您自行承担，九安医疗对此不负责任；
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            2、九安CGM的应用软件账号一旦被注销将不可恢复，请您在操作之前自行备份您账户相关的所有信息和数据。
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            3、九安CGM的应用软件账号注销期间，如果您的账号涉及争议纠纷，包括但不限于投诉、举报、诉讼、仲裁、国家有权机关调查等，九安医疗有权自行终止您的账号的注销而无需另行得到您的同意；
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            4、注销本软件账号，您将无法再使用本软件账号，也将无法找回您与您的账号中及与账号相关的任何内容或信息，包括但不限于：
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            （1）您将无法登录、使用九安CGM的应用软件账号；
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            （2）与账号相关的的个人资料和历史信息（包括但不限于个人资料、血糖记录、事件记录、数据报告、报告解读等）都将无法找回；
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            （3）您将无法接收到与健康数据相关的任何提醒或服务支持；
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            5、您应当按照本软件公示的流程进行账户注销，且您承诺该账户一旦注销，您不会以任何理由要求九安医疗予以恢复；
+        </div>
+        <br/>
+        <div class="agreement-cont" >
+            6、注销本软件账号并不代表您注销前的账户行为和相关责任得到豁免或减轻。
+        </div>
+    </div>
+    <div class="custom" id="vue" >
+        <div v-html="cont" ></div>
+    </div>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+    <!-- <script>
+            function paramsValue(paramName){
+                const searchUrl =  window.location.search.split('?')[1]
+                const searchParams = searchUrl.split('&');
+                const paramsObj = {};
+                searchParams.forEach(param => {
+                    const [key, value] = param.split('=');
+                    paramsObj[key] = value;
+                });
+                const paramValue = paramsObj[paramName];
+                console.log(paramValue)
+                var title = document.getElementsByClassName('agreement-title')[0]
+                var cont = document.querySelectorAll('.agreement-cont')
+                var agreementSubTitle = document.querySelectorAll('.agreement-sub-title')
+                var agreementBold =  document.querySelectorAll('.agreement-bold')
+                title.style.fontSize=18+(paramValue-1)*4+'px'
+                for(var i=0;i<agreementSubTitle.length;i++){
+                    agreementSubTitle[i].style.fontSize=16+(paramValue-1)*4+'px'
+                }
+                for(var i=0;i<cont.length;i++){
+                    cont[i].style.fontSize=16+(paramValue-1)*4+'px'
+                }
+                for(var i=0;i<agreementBold.length;i++){
+                    agreementBold[i].style.fontSize=16+(paramValue-1)*4+'px'
+                }
+            }
+            paramsValue('fontSize')
+         
+    </script> -->
+    <script>
+        new Vue({
+            el:'#vue',
+            data:{
+                fontSize:'default',
+                showFlag:true,
+                cont:''
+            },
+            mounted(){
+                let that = this
+                this.paramsValue('fontSize')
+            },
+            methods: {
+                getList(size){
+                    let self = this
+                    axios.post('https://cgm-api.ihealthlabs.com/api/assist/getlist',{
+                        platform:'del',
+                        categorization:'agreement',
+                        sort:'asc'
+                    }).then(res=>{
+                        let id = res.data.data[0].key
+                        axios.post('https://cgm-api.ihealthlabs.com/api/assist/get/id',{
+                            id:id
+                        }).then(res=>{
+                            this.cont = this.modifyFontSize(res.data.data,size)
+                        }).catch(err=>{
+                            console.log(err)
+                        })
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                    
+                },
+                modifyFontSize(htmlString, newSize) {
+                    // 正则表达式匹配font-size属性值
+                    const sizeRegex = /font-size:\s*(\d+(?:\.\d+)?)(px|em|rem|%)/gi;
+                    // 替换字体大小
+                    return htmlString.replace(sizeRegex, (match, size, unit) => {
+                        return `font-size: ${Number(size)+((newSize-1)*4)}${unit};`;
+                        return match;
+                    });
+                },
+                paramsValue(paramName){
+                    const searchUrl =  window.location.search.split('?')[1]
+                    const searchParams = searchUrl.split('&');
+                    const paramsObj = {};
+                    searchParams.forEach(param => {
+                        const [key, value] = param.split('=');
+                        paramsObj[key] = value;
+                    });
+                    const paramValue = paramsObj[paramName];
+                    this.getList(paramValue)
+
+                }
+            },
+        })
+    </script>
+</body>
+</html>

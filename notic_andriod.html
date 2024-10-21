@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body{
+            background: #ffffff;
+        }
+        .why{
+            padding:12px 0;
+        }
+        #vue{
+            padding:20px;
+        }
+        .lock-title{
+            padding:4px 0;
+        }
+        .teaching-img{
+            width:240px;
+            height: auto;
+            display: block;
+            margin: 30px auto;
+        }
+        .teaching-return{
+            color: #0D84FF;
+            padding-bottom:30px;
+            margin-top:6px;
+        }
+    </style>
+</head>
+<body>
+    <div  id="vue"  :class="'font-'+fontSize+'-15'"  v-cloak v-if="showFlag" >
+       <div v-html="cont">
+       </div>
+        <div class="teaching-return" :class="'font-'+fontSize+'-14'" @click="back" >Click here for feedback.</div>
+    </div>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script>
+        new Vue({
+            el:'#vue',
+            data:{
+                fontSize:'default',
+                showFlag:false,
+                cont:''
+            },
+            mounted(){
+                let that = this
+                // that.getList(1)
+                this.$nextTick(()=>{
+                    window.addEventListener('message', function(e) {
+                        console.log(e)
+                        // that.setLog("接收到rn的消息:"+e.data)
+                        that.showFlag = true
+                        let data = JSON.parse(e.data)
+                        that.getList(data.fontSize)
+                        if(data.fontSize){
+                            if(data.fontSize==1){
+                                that.fontSize = 'default'
+                            }else if(data.fontSize==2){
+                                that.fontSize = 'two'
+                            }else if(data.fontSize==3){
+                                that.fontSize = 'three'
+                            }else if(data.fontSize==4){
+                                that.fontSize = 'four'
+                            }
+                        }
+                    },false)
+                })
+            },
+            methods: {
+                back(){
+                    let obj = {key:'FeedBack'}
+                    window.ReactNativeWebView.postMessage(JSON.stringify(obj))
+                },
+                getList(size){
+                    let self = this
+                    axios.post('https://cgm-api.ihealthlabs.com/api/assist/getlist',{
+                        platform:'Android',
+                        categorization:'notic',
+                        sort:'asc'
+                    }).then(res=>{
+                        axios.post('https://cgm-api.ihealthlabs.com/api/assist/get/id',{
+                            id:res.data.data[0].key
+                        }).then(res=>{
+                            this.cont = this.modifyFontSize(res.data.data,size)
+                        }).catch(err=>{
+                            console.log(err)
+                        })
+                    }).catch(err=>{
+                            console.log(err)
+                    })
+                   
+                },
+                modifyFontSize(htmlString, newSize) {
+                    // 正则表达式匹配font-size属性值
+                    const sizeRegex = /font-size:\s*(\d+(?:\.\d+)?)(px|em|rem|%)/gi;
+                    // 替换字体大小
+                    return htmlString.replace(sizeRegex, (match, size, unit) => {
+                        return `font-size: ${Number(size)+((newSize-1)*4)}${unit};`;
+                        return match;
+                    });
+                },
+            },
+        })
+    </script>
+</body>
+</html>

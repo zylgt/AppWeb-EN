@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .custom{
+            background: #fff;
+            padding:20px;
+            font-size:16px;
+            color:#333;
+        }
+        body,html,p{
+            padding:0;
+            margin:0;
+        }
+    </style>
+</head>
+<body>
+    <div class="custom" id="vue" >
+        <div v-html="cont" ></div>
+    </div>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script>
+        new Vue({
+            el:'#vue',
+            data:{
+                fontSize:'default',
+                showFlag:true,
+                cont:''
+            },
+            mounted(){
+                let that = this
+                this.paramsValue('fontSize')
+            },
+            methods: {
+                getList(size){
+                    let self = this
+                    axios.post('https://cgm-api.ihealthlabs.com/api/assist/getlist',{
+                        platform:'permissions',
+                        categorization:'other',
+                        sort:'asc'
+                    }).then(res=>{
+                        let id = res.data.data[0].key
+                        axios.post('https://cgm-api.ihealthlabs.com/api/assist/get/id',{
+                            id:id
+                        }).then(res=>{
+                            this.cont = this.modifyFontSize(res.data.data,size)
+                        }).catch(err=>{
+                            console.log(err)
+                        })
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                    
+                },
+                modifyFontSize(htmlString, newSize) {
+                    // 正则表达式匹配font-size属性值
+                    const sizeRegex = /font-size:\s*(\d+(?:\.\d+)?)(px|em|rem|%)/gi;
+                    // 替换字体大小
+                    return htmlString.replace(sizeRegex, (match, size, unit) => {
+                        return `font-size: ${Number(size)+((newSize-1)*4)}${unit};`;
+                        return match;
+                    });
+                },
+                paramsValue(paramName){
+                    const searchUrl =  window.location.search.split('?')[1]
+                    const searchParams = searchUrl.split('&');
+                    const paramsObj = {};
+                    searchParams.forEach(param => {
+                        const [key, value] = param.split('=');
+                        paramsObj[key] = value;
+                    });
+                    const paramValue = paramsObj[paramName];
+                    this.getList(paramValue)
+
+                }
+            },
+        })
+    </script>
+</body>
+</html>

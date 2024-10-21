@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        html,body{
+            height: 100%;
+        }
+        .question{
+            background:#fff;
+            height: 100%;
+        }
+        .main-cont{
+            padding:20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="question"  id="vue"    v-cloak v-if="showFlag" >
+        <!-- <div class="log" >打印内容：<br/>
+            <p  v-html ='log'></p>
+        </div> -->
+        <div class="main-cont" v-html="cont" ></div>
+    </div>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script>
+         new Vue({
+            el:'#vue',
+            data:{
+                fontSize:'default',
+                showFlag:false,
+                cont:"",
+                log:''
+            },
+
+            methods: {
+                getList(id,size){
+                    let self = this
+                    axios.post('https://cgm-api.ihealthlabs.com/api/assist/get/id',{
+                       id:id
+                    }).then(res=>{
+                        this.cont = this.modifyFontSize(res.data.data,size)
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                },
+                modifyFontSize(htmlString, newSize) {
+                    // 正则表达式匹配font-size属性值
+                    const sizeRegex = /font-size:\s*(\d+(?:\.\d+)?)(px|em|rem|%)/gi;
+                    // 替换字体大小
+                    return htmlString.replace(sizeRegex, (match, size, unit) => {
+                        return `font-size: ${Number(size)+((newSize-1)*4)}${unit};`;
+                        return match;
+                    });
+                },
+                 // 打印消息
+                setLog(text){
+                    const content = this.formatTime() + " " +text
+                    this.log += content
+                    this.log += "<br/>"
+                },
+                formatTime() {
+                    const now = new Date();
+                    const hours = now.getHours().toString().padStart(2, '0');
+                    const minutes = now.getMinutes().toString().padStart(2, '0');
+                    const seconds = now.getSeconds().toString().padStart(2, '0');
+                    const milliseconds = now.getMilliseconds().toString().padStart(3, '0');
+                    return `${hours}:${minutes}:${seconds}`;
+                },
+            },
+            mounted(){
+                let that = this
+                // this.getList(2)
+                // that.getList(13,1)
+                this.$nextTick(()=>{ 
+                    window.addEventListener('message', function(e) {
+                        console.log(e)
+                        that.showFlag = true
+                        let data = JSON.parse(e.data)
+                        that.getList(data.id,data.fontSize)
+                        if(data.fontSize){
+                            if(data.fontSize==1){
+                                that.fontSize = 'default'
+                            }else if(data.fontSize==2){
+                                that.fontSize = 'two'
+                            }else if(data.fontSize==3){
+                                that.fontSize = 'three'
+                            }else if(data.fontSize==4){
+                                that.fontSize = 'four'
+                            }
+                        }
+                       
+                    },false)
+                })
+                
+            },
+         })
+    </script>
+</body>
+</html>

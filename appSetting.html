@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+    <title>Document</title>
+   <link rel="stylesheet" href="css/style.css">
+   <style>
+    .infoIcon-default{
+        width:16px;
+        height:16px;
+    }
+    .infoIcon-two{
+        width:18px;
+        height:18px;
+    }
+    .infoIcon-three{
+        width:22px;
+        height:22px;
+    }
+    .infoIcon-four{
+        width:24px;
+        height:24px;
+    }
+    .select{
+        width:200px;
+        height:40px;
+        position: relative;
+        margin:10px 0;
+    }
+    .select-box{
+        width:200px;
+        height:40px;
+        border:1px solid #b3b3b3;
+        border-radius:4px;
+        padding:0 20px;
+        box-sizing: border-box;
+        position: relative;
+        line-height: 40px;
+        color:#333;
+    }
+    .select-select{
+        width:200px;
+        position: absolute;
+        left:0;
+        top:50px;
+        background:#fff;
+        box-sizing: border-box;
+        border-radius:4px;
+        border:1px solid #b3b3b3;
+        padding:10px 0;
+    }
+    .select-value{
+        width:100%;
+        box-sizing: border-box;
+        padding:0 20px;
+        height:30px;
+        line-height: 30px;
+        color:#333;
+    }
+    .select-value:hover{
+        background:#f2f2f2;
+    }
+    .select-icon{
+        width:12px;
+        position: absolute;
+        right:20px;
+        top:16px;
+    }
+    .select-icons{
+        width:12px;
+        position: absolute;
+        right:20px;
+        top:16px;
+        transform: rotate(180deg);
+    }
+    .toast-title{
+        padding:20px 10px 10px 10px;
+    }
+   </style>
+</head>
+<body>
+    <div :class="[dialog?'settingBoxs':settingBox,'font-'+fontSize+'-16']" id="vue"   v-cloak >
+        <div class="why " :class="'font-'+fontSize+'-14'" >
+            Your system may close the APP automatically. To ensure that you can receive real-time blood glucose data and alerts, please turn on the following settings.
+        </div>
+        <div class="switch-setting">
+            <div class="switch-item switch-item"  @click="switchFront">
+                <div class="switch-item-label">
+                    <p class="switch-item-label-text">
+                        Notification Bar Foreground Run
+                    </p>
+                    <p :class="'font-'+fontSize+'-13'" class="switch-item-label-tip">
+                        Allows foreground runs to maintain a more stable connection to the device.
+                    </p>
+                </div>
+                <img src="img/switch.png" alt="" class="switch-icon " v-if="!frontSwitch" >
+                <img src="img/switch1.png" alt="" class="switch-icon " v-else>
+            </div>
+            <div class="switch-item switch-item"  @click="switchBattery">
+                <div class="switch-item-label">
+                    <p class="switch-item-label-text">
+                        Ignore Battery Optimisation
+                    </p>
+                    <p class="switch-item-label-tip" :class="'font-'+fontSize+'-13'" >
+                        Add a Battery Optimization whitelist to prevent your system from shutting down the app by mistake.
+                    </p>
+                </div>
+                <img src="img/switch.png" alt="" class="switch-icon" v-if="!batterySwitch">
+                <img src="img/switch1.png" alt="" class="switch-icon " v-else>
+            </div>
+            <div class="switch-item switch-item" >
+                <div class="switch-item-label">
+                    <p class="switch-item-label-text">
+                        Setting up Background Running
+                    </p>
+                    <p class="switch-item-label-tip" :class="'font-'+fontSize+'-13'" >
+                        Find out how to set up the background operation according to your mobile phone model.
+                    </p>
+                    <p class="switch-item-label-text" style="margin-top:8px;">
+                        Phone Model
+                    </p>
+                    <div class="select" >
+                        <div class="select-box"  :class="'font-'+fontSize+'-14'" @click="phoneSelectShow=!phoneSelectShow">
+                            {{phoneValue}}
+                            <img src="img/select-icon.png" alt="" :class="[phoneSelectShow?'select-icon':'select-icons']" >
+                        </div>
+                        <div class="select-select" v-if="phoneSelectShow">
+                            <div class="select-value" :class="'font-'+fontSize+'-14'" @click="phoneSelect(index)" v-for="(item,index) in phoneList" >{{item.name}}</div>
+                        </div>
+                    </div>
+                    <p class="switch-item-label-tip" :class="'font-'+fontSize+'-13'" >
+                        {{phoneList[phoneIndex].cont}}
+                    </p>
+                </div>
+            </div>
+            <div class="handel-setting-item">
+                <div class="handel-setting-item-title">
+                    <div class="handel-setting-item-label">
+                        Self-Start Management
+                    </div>
+                    <div class="handel-setting-goto" :class="'font-'+fontSize+'-14'" @click="SetStartAutomatically" >
+                        settings
+                        <img src="img/setting-icon.png" alt="" class="setting-icon" >
+                    </div>
+                </div>
+                 <p class="switch-item-label-tip " :class="'font-'+fontSize+'-13'">
+                    Turn on Self-Start Management, the app can run continuously in the background.
+                </p>
+            </div>
+            <div class="handel-setting-item" >
+                <p class="switch-item-label-text">
+                    Lock The App (Recommended)
+                </p>
+                <div class="lock-title" :class="'font-'+fontSize+'-14'">Non full-screen or full-screen phones with navigation button.</div>
+                <div class="lock-info" :class="'font-'+fontSize+'-14'">
+                    <p>1.Tap “<img src="img/icon1.png" alt="" class="info-icon" :class="'infoIcon-'+fontSize">” at the bottom of the screen; </p>
+                    <p>2. Press and hold “iHealth CGM” and “<img src="img/icon2.png" alt="" :class="'infoIcon-'+fontSize" >” will appear on the “iHealth CGM”.</p>
+                    <img src="img/lock-img1.png" alt="" class="lock-img" >
+                </div>
+                 <div class="lock-title "  :class="'font-'+fontSize+'-14'">Full screen phones</div>
+                <div class="lock-info "  :class="'font-'+fontSize+'-14'">
+                    <p>1. Slowly pull up from the bottom of your phone's screen to enter the recently opened apps page.</p>
+                    <p> 2. Press and hold “iHealth CGM” and “<img src="img/icon2.png" alt="" :class="'infoIcon-'+fontSize" >” will appear on the "iHealth CGM."</p>
+                    <img src="img/lock-img2.png" alt="" class="lock-img" >
+                </div>
+            </div>
+        </div>
+        <div class="toast-box"  v-if="toast">
+            <div class="toast" >
+                <div class="toast-title"  :class="'font-'+fontSize+'-16'">{{toastTitle}}</div>
+                <div class="toast-cont "   :class="'font-'+fontSize+'-14'">
+                    {{toastCont}}
+                </div>
+                <div class="toast-btn" >
+                    <div class='toast-btn-cancel' :class="'font-'+fontSize+'-16'" @click="toast=false">Cancel</div>
+                    <div class='toast-btn-confirm' :class="'font-'+fontSize+'-16'" @click="toastConfirm">Confirm</div>
+                </div>
+            </div>  
+        </div>
+        <!-- <div class="log" >打印内容：<br/>
+            <p  v-html ='log'></p>
+        </div> -->
+    </div>
+</body>
+<script src="js/vue.js"></script>
+
+<script>
+    new Vue({
+        el:'#vue',
+        data:{
+            frontSwitch:0, //0关 1开
+            batterySwitch:0, //0关 1开
+            dialog:false,
+            toast:false,
+            toastTitle:'',
+            toastCont:'',
+            toastType:1, //1 前台运行 2电池优化
+            c:'',
+            firing:[],
+            battery:[],
+            lock:[],
+            log:[],
+            fontSize:'default',
+            phoneList:[
+                {name:'Other',cont:'Open the autostart switch. If you installed other optimizing software, make sure the iHealth app is whitelisted.'},
+                {name:'SAMSUNG',cont:'Settings > Apps > iHealth App > Battery > Allow background activity.'},
+                {name:'Google',cont:'Settings > Apps & Notifications > iHealth App > Battery > Background. Please turn the status to Background USAGE.'},
+                {name:'LG',cont:'Settings > Apps > iHealthApp > Battery > Allow background activity.'},
+                {name:'Moto',cont:'Settings > Apps & Notifications > iHealth App > Advanced > Battery > Background restriction > Don’t restrict.'},
+            ],
+            phoneValue:'Other',
+            phoneIndex:0,
+            phoneSelectShow:false
+        },
+        created() {
+        },
+        mounted() {
+            let that = this
+            this.$nextTick(()=>{
+                window.addEventListener('message', function(e) {
+                    let data = JSON.parse(e.data)
+                    that.setLog("接收到rn的消息:"+data.phoneBrand)
+                    // that.setLog("电源管理:"+data.batteryOptimization)
+                    that.frontSwitch = data.foreground
+                    that.batterySwitch = data.batteryOptimization
+                    if(data.fontSize){
+                        if(data.fontSize==1){
+                            that.fontSize = 'default'
+                        }else if(data.fontSize==2){
+                            that.fontSize = 'two'
+                        }else if(data.fontSize==3){
+                            that.fontSize = 'three'
+                        }else if(data.fontSize==4){
+                            that.fontSize = 'four'
+                        }
+                    }
+                    if(data.phoneBrand){
+                        that.phoneList.forEach((item,index) => {
+                            if(item.name ==  data.phoneBrand.toLowerCase()){
+                                that.phoneIndex = index
+                                that.phoneValue = item.name
+                            }
+                        });
+                       
+                    }
+                },false)
+            })
+        },
+        methods: {
+            switchFront(){
+                if(this.frontSwitch){
+                    this.toastType = 1
+                    this.toast = true
+                    this.toastTitle='Turn off Notification Bar Foreground Run'
+                    this.toastCont = 'Functions like real-time data and message notifications may be unstable when turned off, which will result in data and message notifications being received late. '
+                }else{
+                    this.frontSwitch = 1
+                    this.sendData('Foreground',this.frontSwitch)
+                }
+            },
+            switchBattery(){
+                if(this.batterySwitch){
+                    this.toastType = 2
+                    this.toast = true
+                    this.toastTitle='Turn off Ignore Battery Optimisation'
+                    this.toastCont = 'Functions like real-time data and message notifications may be unstable when turned off, which will result in data and message notifications being received late.'
+                }else{
+                    this.batterySwitch = 1
+                    this.sendData('BatteryOptimization',this.batterySwitch)
+                }
+            },
+            // 手机品牌选择
+            phoneSelect(index){
+                this.phoneValue = this.phoneList[index].name
+                this.phoneSelectShow = false
+                this.phoneIndex = index
+            },
+            // 弹窗
+            toastConfirm(){
+                this.toast = false
+                if(this.toastType==1){
+                    this.frontSwitch = 0
+                    this.sendData('Foreground',this.frontSwitch)
+                }else{
+                    this.batterySwitch = 0
+                    this.sendData('BatteryOptimization',this.batterySwitch)
+                }
+            },
+            // 设置自启动
+            SetStartAutomatically(){
+                this.sendData('SetStartAutomatically')
+            },
+            // 设置电源
+            SetBattery(){
+                this.sendData('SetBattery')
+            },
+            // 给rn发送消息
+            sendData(key,value){
+                let obj = {key:'',value:''}
+                switch(key){
+                    case 'Foreground':
+                        obj.key = 'Foreground'
+                        obj.value = value
+                        break;
+                    case 'BatteryOptimization':
+                        obj.key = 'BatteryOptimization'
+                        obj.value = value
+                        break;
+                    case 'SetStartAutomatically':
+                        obj.key = 'SetStartAutomatically'
+                        break;
+                    case 'SetBattery':
+                        obj.key = 'SetBattery'
+                        break;
+                }
+                // this.setLog("发送给rn的消息:"+JSON.stringify(obj))
+                // window.postMessage(JSON.stringify(obj))
+                window.ReactNativeWebView.postMessage(JSON.stringify(obj))
+            },
+            // 打印消息
+            setLog(text){
+                const content = this.formatTime() + " " +text
+                this.log += content
+                this.log += "<br/>"
+            },
+         
+            formatTime() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                const milliseconds = now.getMilliseconds().toString().padStart(3, '0');
+                return `${hours}:${minutes}:${seconds}`;
+            },
+        }
+    })
+</script>
+</html>

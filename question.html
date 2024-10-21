@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .question{
+            background:#fff;
+        }
+        .question-list{
+            margin:0 20px;
+            border-bottom:1px solid #e5e5e5;
+            overflow: hidden;
+        }
+        .question-list:last-child{
+            border:none;
+        }
+        .question-label{
+            color:#333;
+            padding:20px 0;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: space-between;
+        }
+        .more-icon{
+            width:8px;
+            height: auto;
+            margin-left:10px;
+        }
+        .more-icons{
+            transform: rotate(90deg);
+        }
+        .answer{
+            color:#666;
+            overflow: hidden;
+            height: 0;
+            padding-bottom:0;
+            transition: all 0.1s linear;
+        }
+        .answer.open{
+            height: auto;
+            padding-bottom:10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="question"  id="vue"  :class="'font-'+fontSize+'-16'"  v-cloak  v-if="showFlag">
+        <div class="question-list" v-for="(item,index) in list" :key="index" @click="tab(item.key,item.value)">
+            <div class="question-label" >
+                <p>{{item.value}}</p>
+                <img src="img/more-icon.png" alt="" :class="[item.checked?'more-icons':'','more-icon']" >
+            </div>
+        </div>
+    </div>
+    <script src="js/vue.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script>
+         new Vue({
+            el:'#vue',
+            data:{
+                fontSize:'default',
+                list:[],
+                showFlag:false
+            },
+            methods: {
+                tab(id,title){
+                    let obj = {id:id,title:title}
+                    console.log(obj)
+                    window.ReactNativeWebView.postMessage(JSON.stringify(obj))
+                },
+                getList(){
+                    let self = this
+                    axios.post('https://cgm-api.ihealthlabs.com/api/assist/getlist',{
+                        platform:'all',
+                        categorization:'question',
+                        sort:'asc'
+                    }).then(res=>{
+                        self.list = res.data.data
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }
+            },
+            mounted(){
+                let that = this
+                this.getList()
+                this.$nextTick(()=>{
+                    window.addEventListener('message', function(e) {
+                        console.log(e)
+                        // that.setLog("接收到rn的消息:"+e.data)
+                        let data = JSON.parse(e.data)
+                        if(data.fontSize){
+                            if(data.fontSize==1){
+                                that.fontSize = 'default'
+                            }else if(data.fontSize==2){
+                                that.fontSize = 'two'
+                            }else if(data.fontSize==3){
+                                that.fontSize = 'three'
+                            }else if(data.fontSize==4){
+                                that.fontSize = 'four'
+                            }
+                        }
+                        that.showFlag = true
+                    },false)
+                })
+            },
+         })
+    </script>
+</body>
+</html>
