@@ -110,7 +110,7 @@
                 <img src="img/switch.png" alt="" class="switch-icon" v-if="!batterySwitch">
                 <img src="img/switch1.png" alt="" class="switch-icon " v-else>
             </div>
-            <div class="switch-item switch-item" >
+            <div class="switch-item switch-item"  v-if="phoneValue!='oneplus'">
                 <div class="switch-item-label">
                     <p class="switch-item-label-text">
                         Setting up Background Running
@@ -135,13 +135,24 @@
                     </p>
                 </div>
             </div>
+             <div class="switch-item switch-item" v-if="phoneValue=='oneplus'">
+                <div class="switch-item-label">
+                    <p class="switch-item-label-text">
+                        Turn Off Sleep Standby Optimization
+                    </p>
+                    <p class="switch-item-label-tip" :class="'font-'+fontSize+'-13'" >
+                        Go to “Settings > Battery > More Settings > Turn off Sleep Standby Optimization”.<br/>
+                        Go to “Settings > Battery > More Settings > App Battery Management > iHealth CGM > Allow Background Activity” to make sure the app updates blood glucose information in time. 
+                    </p>
+                </div>
+            </div>
             <div class="handel-setting-item">
                 <div class="handel-setting-item-title">
                     <div class="handel-setting-item-label">
                         Self-Start Management
                     </div>
                     <div class="handel-setting-goto" :class="'font-'+fontSize+'-14'" @click="SetStartAutomatically" >
-                        settings
+                        Settings
                         <img src="img/setting-icon.png" alt="" class="setting-icon" >
                     </div>
                 </div>
@@ -237,8 +248,9 @@
                         }
                     }
                     if(data.phoneBrand){
+                        that.phoneValue = data.phoneBrand.toLowerCase()
                         that.phoneList.forEach((item,index) => {
-                            if(item.name ==  data.phoneBrand.toLowerCase()){
+                            if(item.name.toLowerCase().includes(data.phoneBrand.toLowerCase())){
                                 that.phoneIndex = index
                                 that.phoneValue = item.name
                             }
